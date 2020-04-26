@@ -32,13 +32,13 @@ COPY ["TestTask_Core3/TestTask_Core3.csproj", "TestTask_Core3/"]
 RUN dotnet restore "TestTask_Core3/TestTask_Core3.csproj"
 COPY . .
 WORKDIR "/src/TestTask_Core3"
-RUN dotnet build "TestTask_Core3.csproj" -c Release -o out
+RUN dotnet build "TestTask_Core3.csproj" -c Release -o /app/build
 
 FROM build-env AS publish
-RUN dotnet publish "TestTask_Core3.csproj" -c Release -o out
+RUN dotnet publish "TestTask_Core3.csproj" -c Release -o /app/publish
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 WORKDIR /app
-COPY --from=build-env /app/out .
+COPY --from=build-env /app/publish .
 ENTRYPOINT ["dotnet", "TestTask_Core3.dll"]
