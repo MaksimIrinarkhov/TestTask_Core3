@@ -28,7 +28,7 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
 WORKDIR /app
 
 # Copy csproj and restore as distinct layers
-COPY TestTask_Core3.csproj ./
+COPY ["TestTask_Core3/TestTask_Core3.csproj", "TestTask_Core3/"]
 RUN dotnet restore
 
 # Copy everything else and build
