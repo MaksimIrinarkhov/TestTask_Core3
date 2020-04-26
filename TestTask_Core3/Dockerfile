@@ -27,13 +27,15 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
 WORKDIR /app
 
-# Copy csproj and restore as distinct layers
+WORKDIR /src
 COPY ["TestTask_Core3/TestTask_Core3.csproj", "TestTask_Core3/"]
-RUN dotnet restore
+RUN dotnet restore "TestTask_Core3/TestTask_Core3.csproj"
+COPY . .
+WORKDIR "/src/TestTask_Core3"
+RUN dotnet build "TestTask_Core3.csproj" -c Release -o /app/build
 
-# Copy everything else and build
-COPY . ./
-RUN dotnet publish -c Release -o out
+FROM build-env AS publish
+RUN dotnet publish "TestTask_Core3.csproj" -c Release -o /app/publish
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
